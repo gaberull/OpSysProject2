@@ -1,6 +1,6 @@
 
-// Austin "Gabe" Scott      project1
-//  version 9/13/19
+// Austin "Gabe" Scott      project2
+//  version 10/03/19
 
 /* the main program maintains a 128-byte buffer in memory.
  * The user can interact with this buffer by placing integer,
@@ -16,9 +16,6 @@
 //#include <stdlib.h>
 //#include <stdbool.h>
 #include "storage.h"
-//#define MAX_ARGS 3;
-//#define INBUFFSIZE 128;   // size of buffer in bytes
-
 
 const char SEPARATORS[] = " \t\n";
 char in_buffer[200];           // Input buffer from STDIN. command input buffer INBUFFSIZE = 200
