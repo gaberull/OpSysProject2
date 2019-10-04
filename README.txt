@@ -4,4 +4,6 @@ discussed Makefiles with Bao Le
 
 Resources:
 
+https://devdocs.io/c/io/fscanf
+
 
