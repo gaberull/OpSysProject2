@@ -1,15 +1,15 @@
-all: project1 
+all: project2 
 
-project1.o: project1.c 
-	gcc -c project1.c  
+project2.o: project2.c 
+	gcc -c project2.c  
 
-project1: project1.o storage.o
-	gcc project1.o storage.o -o project1
+project2: project2.o storage_remote.o
+	gcc project2.o storage_remote.o -o project2
 
-storage.o: storage.c storage.h
-	gcc -c storage.c
+storage_remote.o: storage_remote.c storage_remote.h
+	gcc -c storage_remote.c
 
 pipes: 
 	mkfifo pipe_in pipe_out
 clean:
-	rm -f *.o project1
+	rm -f *.o project2
