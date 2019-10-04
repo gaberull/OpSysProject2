@@ -8,5 +8,8 @@ project1: project1.o storage.o
 
 storage.o: storage.c storage.h
 	gcc -c storage.c
+
+pipes: 
+	mkfifo pipe_in pipe_out
 clean:
 	rm -f *.o project1
