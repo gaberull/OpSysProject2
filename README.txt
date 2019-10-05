@@ -19,3 +19,16 @@ http://www.cs.ou.edu/~fagg/classes/cs3113/projects/project1.html
 http://www.cs.ou.edu/~fagg/classes/cs3113/lecture/cs3113_processes.pdf
 
 https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
+
+https://stackoverflow.com/questions/46422668/in-c-language-can-i-access-local-variable-of-main-function-in-another-function
+
+https://stackoverflow.com/questions/20589045/modify-buffer-passed-as-a-pointer
+
+https://www.learncpp.com/cpp-tutorial/6-8a-pointer-arithmetic-and-array-indexing/
+
+https://stackoverflow.com/questions/30784617/c-program-update-unsigned-char-pointer-array-with-function
+
+https://stackoverflow.com/questions/20589045/modify-buffer-passed-as-a-pointer
+https://stackoverflow.com/questions/46422668/in-c-language-can-i-access-local-variable-of-main-function-in-another-function
+
+https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
