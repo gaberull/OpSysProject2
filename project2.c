@@ -15,7 +15,7 @@
 //#include <ctype.h>
 //#include <stdlib.h>
 //#include <stdbool.h>
-#include "storage.h"
+#include "storage_remote.h"
 
 const char SEPARATORS[] = " \t\n";
 char in_buffer[200];           // Input buffer from STDIN. command input buffer INBUFFSIZE = 200
@@ -164,23 +164,24 @@ void readString(char** arg)         // 'S'  reads string from buffer
     printf("\n");
 }
 
-void writeToFile(char** arg)        // 'w'  writes to storage.bin file
+void writeToFile(char** arg, const char* filename)        // 'w'  writes to storage.bin file
 {
     int offset = atoi(*arg);    // offset in the file to write to
     arg++;
     int len = atoi(*arg);       // get number of bytes to read 0 - 128
-    STORAGE* st = init_storage("storage.bin");
+    STORAGE* st = init_storage(filename);
     if (put_bytes(st, charBuffer, offset, len) != len)
         perror("write function failed");
     close_storage(st);
 }
 
-void readFileToBuf(char** arg)          // 'r' Reads from the storage.bin file to charBuffer[]
+void readFileToBuf(char** arg, const char* filename)          // 'r' Reads from the storage.bin file to charBuffer[]
 {
     int offset = atoi(*arg);
     arg++;
     int len = atoi(*arg);           // number of bytes to read 0 - 128
-    STORAGE* st = init_storage("storage.bin");
+    
+    STORAGE* st = init_storage(filename);   // TODO: check to see if losing const is an issue or not
     if (get_bytes(st, charBuffer, offset, len) != len)
         perror("read to buffer froom file failed");
     close_storage(st);
@@ -188,6 +189,19 @@ void readFileToBuf(char** arg)          // 'r' Reads from the storage.bin file t
 
 int main(int argc, const char * argv[])
 {
+    // TODO: check command line arguments
+    const char * filename;
+    if (argc==1)// no additional arguments specify storage file as "storage.bin"
+    {
+        //STORAGE* st = init_storage("storage.bin");
+        filename = "storage.bin";
+    }
+    // TODO: if there is a second argument, it is the name of the file to write to
+    else if (argc==2)
+    {
+        //STORAGE* st = init_storage(argv[1]);
+        filename = argv[1];
+    }
     while(fgets(in_buffer, 100, stdin)!= NULL) // while input string is coming in
     {
         arg = args;                 // arg is like an iterator through string of arguments (args)
@@ -227,9 +241,9 @@ int main(int argc, const char * argv[])
                 break;
             case 'S' : readString(arg);
                 break;
-            case 'w' : writeToFile(arg);
+            case 'w' : writeToFile(arg, filename);
                 break;
-            case 'r' : readFileToBuf(arg);
+            case 'r' : readFileToBuf(arg, filename);
                 break;
             default: fprintf(stderr, "incorrect input");
                 break;
