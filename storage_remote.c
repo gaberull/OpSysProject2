@@ -46,7 +46,7 @@ STORAGE * init_storage(char * name)
         return NULL;
     }
     // send filename
-    if (write(s->fd_to_storage, &namestr, sizeof(namestr)) != sizeof(namestr))
+    if (write(s->fd_to_storage, &namestr, length) != length)
     {
         perror("write (send to pipe_in) filename failed");
         return NULL;
@@ -64,7 +64,7 @@ STORAGE * init_storage(char * name)
         return NULL;
     }
     // All okay
-    if (h.len_message == ACKNOWLEDGE)       // if correct response return s
+    if (h.type == ACKNOWLEDGE)       // if correct response return s
     {
         return s;
     }
