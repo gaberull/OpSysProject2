@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv)
 {
-                                            /*
+    
     unsigned char buffer[BUFSIZE];
     HEADER header;
     HEADER header_out;
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
                 exit(-1);
             }
             // open file using storage.c function
-            storage = init_storage(filename);
+            //storage = init_storage(filename);
             
             // send aknowledge again after opening file
             if(write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
@@ -68,9 +68,9 @@ int main(int argc, char** argv)
         fprintf(stderr, "Closing connection\n");
         close(fd_in);
         close(fd_out);
-        close_storage(storage);
+        //close_storage(storage);
     }
-                                             */
+    
     // Should never reach here
     return(0);
 }
