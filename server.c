@@ -21,11 +21,47 @@ int main(int argc, char** argv)
         fprintf(stderr, "Waiting for connection with client...\n");
         
         // Open to_storage pipe
-        
-        
-        
-        
-        
+        if ((fd_in = open("pipe_in", O_RDONLY) < 0))
+        {
+            exit(-1);       // TODO: instructions say okay to terminate on failure
+        }
+        if ((fd_out = open("pipe_out", O_WRONLY) < 0))
+        {
+            exit(-1);
+        }
+        if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
+        {
+            exit(-1);
+        }
+        if (header.type == INIT_CONNECTION) // TODO: check all this possible scrap it
+        {
+            // Send back aknowledge
+            header_out.type = ACKNOWLEDGE;
+            header_out.len_message = 0;
+            header_out.location = -1;
+            header_out.len_buffer = -1;
+            if (write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
+            {
+                exit (-1);
+            }
+            
+            // read in again to get name of fiole
+            int size = header.len_message;      // size of message to follow
+            char filename[30];
+            if (read(fd_in, filename, size) != size)        // get filename from another read
+            {
+                exit(-1);
+            }
+            // open file using storage.c function
+            storage = init_storage(filename);
+            
+            // send aknowledge again after opening file
+            if(write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
+            {
+                exit(-1);
+            }
+            
+        }
         
         // We broke out because of a disconnection: clean up
         fprintf(stderr, "Closing connection\n");
