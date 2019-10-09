@@ -7,6 +7,7 @@
 
 int main(int argc, char** argv)
 {
+                                            /*
     unsigned char buffer[BUFSIZE];
     HEADER header;
     HEADER header_out;
@@ -69,7 +70,7 @@ int main(int argc, char** argv)
         close(fd_out);
         close_storage(storage);
     }
-    
+                                             */
     // Should never reach here
     return(0);
 }
