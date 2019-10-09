@@ -10,7 +10,7 @@ storage_remote.o: storage_remote.c storage_remote.h
 	gcc -c storage_remote.c
 
 server.o: storage.h comm.h storage_common.h
-	gcc -c server.o
+	gcc -c server.c
 
 server: server.o
 	gcc server.o -o server
