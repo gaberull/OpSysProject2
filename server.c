@@ -1,6 +1,7 @@
 #include "storage.h"
 #include "comm.h"
 #include "storage_common.h"
+#include "storage.c"
 #include <string.h>
 
 #define BUFSIZE 200
