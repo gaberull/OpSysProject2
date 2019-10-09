@@ -1,4 +1,4 @@
-all: project2 
+all: project2 server
 
 project2.o: project2.c 
 	gcc -c project2.c  
@@ -8,6 +8,12 @@ project2: project2.o storage_remote.o
 
 storage_remote.o: storage_remote.c storage_remote.h
 	gcc -c storage_remote.c
+
+server.o: storage.h comm.h storage_common.h
+	gcc -c server.o
+
+server: server.o
+	gcc server.o -o server
 
 pipes: pipe_in pipe_out
 
