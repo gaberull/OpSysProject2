@@ -27,4 +27,6 @@ pipe_out:
 	mkfifo pipe_out
 
 clean:
-	rm -f *.o project2
+	rm -f *.o project2 server
+	rm -f pipe_in
+	rm -f pipe_out
