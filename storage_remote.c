@@ -31,13 +31,12 @@ STORAGE * init_storage(char * name)
     //sscanf(name, "%s", namestr);    // should store a null character in addition to the string
     
     // create and initialize HEADER instance to send INIT_CONNECTION message to server
-    // TODO: null terminate at end of message
     HEADER h;
     //STORAGE st;
     h.type = INIT_CONNECTION;
     h.len_message = length;
-    h.location = -1;    // TODO: make sure not applicable to INIT
-    h.len_buffer = -1;  // TODO: make sure not applicable to INIT
+    h.location = -1;    // not applicable to INIT
+    h.len_buffer = -1;  // not applicable to INIT
     
     // write() to send the HEADER if return value > 0 it was succesful
     if (write(s->fd_to_storage, &h, sizeof(h)) != sizeof(h))

@@ -21,54 +21,78 @@ int main(int argc, char** argv)
     while(1) {
         fprintf(stderr, "Waiting for connection with client...\n");
         
-        // Open to_storage pipe
+        // Open pipes
         if ((fd_in = open("pipe_in", O_RDONLY) < 0))
         {
-            printf("exited on opening pipe_in");
+            perror("the following error occured: ");
             exit(-1);       // TODO: instructions say okay to terminate on failure
         }
         if ((fd_out = open("pipe_out", O_WRONLY) < 0))
         {
-            printf("exited on opening pipe_out");
+            perror("exited on opening pipe_out");
             exit(-1);
         }
+        // Do first read() from pipe
         if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
         {
-            printf("exited on read of fd_in");
+            perror("exited on read of fd_in");
             exit(-1);
         }
-        if (header.type == INIT_CONNECTION) // TODO: check all this possible scrap it
+        if (header.type == INIT_CONNECTION) // check that header type is INIT 
         {
-            // Send back aknowledge
+            // prepare to Send back aknowledge
             header_out.type = ACKNOWLEDGE;
             header_out.len_message = 0;
             header_out.location = -1;
             header_out.len_buffer = -1;
+            // write to fd_out to send header_out back across pipe
             if (write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
             {
-                printf("exited on write to fd_out");
+                perror("exited on write to fd_out");
                 exit (-1);
             }
             
-            // read in again to get name of fiole
+            // read in again to get name of file
             int size = header.len_message;      // size of message to follow
-            char filename[30];
+            char filename[size];    // create buffer to hold filename
             if (read(fd_in, filename, size) != size)        // get filename from another read
             {
-                printf("exited on read of fd_in");
+                perror("exited on read of fd_in");
                 exit(-1);
             }
-            // open file using storage.c function
-            storage = init_storage(filename);
-            
-            // send aknowledge again after opening file
+            // open (initialize) file using storage.c function
+            if (storage = init_storage(filename)== NULL) // TODO: check that this check works uses storage.c to initialize file. storage.c returns NULL if it fails
+            {
+                perror("init_storage call in storage.c failed");
+                exit(-1);
+            } 
+            // send back same aknowledge again after opening file
             if(write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
             {
-                printf("exited on write of fd_out");
+                perror("exited on write of fd_out");
                 exit(-1);
             }
             
         }
+        // do next read() to get next message
+        if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
+        {
+            perror("read failed");
+            exit (-1);
+        }
+        if (header.type == READ_REQUEST)
+        {
+
+        }
+        else if (header.type == WRITE_REQUEST)
+        {
+
+        }
+        else // header.type == SHUTDOWN
+        {
+            //
+        }
+
         
         // We broke out because of a disconnection: clean up
         fprintf(stderr, "Closing connection\n");
