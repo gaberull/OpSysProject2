@@ -26,40 +26,38 @@ STORAGE * init_storage(char * name)
     // Append '\0' to name
     int length = (int)strlen(name) + 1;
     char namestr[length];
-    namestr[length -1] = '0';           // append null character to string
+    namestr[length -1] = '\0';           // append null character to string
     strncpy(namestr, name, length-1);   // copy all but the null character b/c its already there
-    //sscanf(name, "%s", namestr);    // should store a null character in addition to the string
     
     // create and initialize HEADER instance to send INIT_CONNECTION message to server
     HEADER h;
-    //STORAGE st;
     h.type = INIT_CONNECTION;
     h.len_message = length;
-    h.location = -1;    // not applicable to INIT
-    h.len_buffer = -1;  // not applicable to INIT
+    h.location = -1;    // not applicable to INIT_CONNECTION
+    h.len_buffer = -1;  // not applicable to INIT_CONNECTION
     
     // write() to send the HEADER if return value > 0 it was succesful
     if (write(s->fd_to_storage, &h, sizeof(h)) != sizeof(h))
     {
-        perror("write (send to pipe_in) STORAGE failed");
+        perror("write (send to pipe_in) STORAGE failed: ");
         return NULL;
     }
     // send filename
     if (write(s->fd_to_storage, &namestr, length) != length)
     {
-        perror("write (send to pipe_in) filename failed");
+        perror("write (send to pipe_in) filename failed: ");
         return NULL;
     }
     
     // Do two reads() to get responses for both writes
     if (read(s->fd_from_storage, &h, sizeof(HEADER) != sizeof(HEADER)))
     {
-        perror("read() from pipe_out has failed");
+        perror("read() from pipe_out has failed: ");
         return NULL;
     }
     if (read(s->fd_from_storage, &h, sizeof(HEADER) != sizeof(HEADER)))
     {
-        perror("read() from pipe_out has failed");
+        perror("read() from pipe_out has failed: ");
         return NULL;
     }
     // All okay
@@ -80,10 +78,38 @@ int close_storage(STORAGE *storage)
 {
     // Create the shutdown message
     HEADER header;
+    // initialize header values
+    header.type = SHUTDOWN;
+    header.len_message = 0;
+    header.location = -1;
+    header.len_buffer = -1;
     
-    
-    
-    
+    // send header to server
+    if (write(storage->fd_to_storage, &header, sizeof(HEADER) != sizeof(HEADER) ))
+    {
+        perror("while sending shudown header: ");
+        return -1;
+    }
+    // receive response from server
+    if (read(storage->fd_from_storage, &header, sizeof(HEADER) != sizeof(HEADER) ))
+    {
+        perror("while receiving acknowledgement about shutdown: ");
+        return -1;
+    }
+    // check that header type is aknowledge and close pipes
+    if (header.type == ACKNOWLEDGE)
+    {
+        if (close(storage->fd_to_storage) < 0 )
+        {
+            perror("failed to close fd_to_storage: ");
+            return -1;
+        }
+        if (close(storage->fd_from_storage) < 0 )
+        {
+            perror("failed to close fd_from_storage: ");
+            return -1;
+        }
+    }
     // Free the storage struction
     free(storage);
     
