@@ -190,7 +190,7 @@ void readFileToBuf(char** arg, const char* filename)          // 'r' Reads from 
 int main(int argc, const char * argv[])
 {
     // check command line arguments
-    const char * filename;
+    char filename[35];
     if (argc==1)// no additional arguments specify storage file as "storage.bin"
     {
         //STORAGE* st = init_storage("storage.bin");
