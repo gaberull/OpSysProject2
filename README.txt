@@ -32,3 +32,7 @@ https://stackoverflow.com/questions/20589045/modify-buffer-passed-as-a-pointer
 https://stackoverflow.com/questions/46422668/in-c-language-can-i-access-local-variable-of-main-function-in-another-function
 
 https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
+
+http://www.cplusplus.com/reference/cstring/strncpy/
+
+http://www.cplusplus.com/reference/cstdio/perror/
