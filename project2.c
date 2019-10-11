@@ -189,14 +189,14 @@ void readFileToBuf(char** arg, const char* filename)          // 'r' Reads from 
 
 int main(int argc, const char * argv[])
 {
-    // TODO: check command line arguments
+    // check command line arguments
     const char * filename;
     if (argc==1)// no additional arguments specify storage file as "storage.bin"
     {
         //STORAGE* st = init_storage("storage.bin");
-        strcpy(filename, "storage.bin"); // TODO: do I need to add null terminator to name?
+        strcpy(filename, "storage.bin"); // adds null terminator to string
     }
-    // TODO: if there is a second argument, it is the name of the file to write to
+    // if there is a second argument, it is the name of the file to write to
     else if (argc==2)
     {
         //STORAGE* st = init_storage(argv[1]);
