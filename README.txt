@@ -36,3 +36,9 @@ https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
 http://www.cplusplus.com/reference/cstring/strncpy/
 
 http://www.cplusplus.com/reference/cstdio/perror/
+
+http://www.cplusplus.com/reference/cstdio/perror/?kw=perror
+
+http://www.cplusplus.com/reference/cstring/strcpy/
+
+https://en.wikipedia.org/wiki/Null-terminated_string
