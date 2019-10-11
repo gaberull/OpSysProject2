@@ -87,10 +87,12 @@ int main(int argc, char** argv)
         }
         else // header.type == SHUTDOWN
         {
-
+            sleep(1);           // sleep for 1 second
+            close(fd_in);       // close the named pipes
+            close(fd_out);
+            close_storage(storage);     // close the storage
         }
 
-        
         // We broke out because of a disconnection: clean up
         fprintf(stderr, "Closing connection\n");
         close(fd_in);
