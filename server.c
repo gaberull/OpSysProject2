@@ -25,17 +25,17 @@ int main(int argc, char** argv)
         if ((fd_in = open("pipe_in", O_RDONLY) < 0))
         {
             perror("the following error occured: ");
-            exit(-1);       // TODO: instructions say okay to terminate on failure
+            exit(-1);       // instructions say okay to terminate on failure
         }
         if ((fd_out = open("pipe_out", O_WRONLY) < 0))
         {
-            perror("exited on opening pipe_out");
+            perror("exited on opening pipe_out: ");
             exit(-1);
         }
         // Do first read() from pipe
         if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
         {
-            perror("exited on read of fd_in");
+            perror("exited on read of fd_in: ");
             exit(-1);
         }
         if (header.type == INIT_CONNECTION) // check that header type is INIT 
@@ -61,12 +61,9 @@ int main(int argc, char** argv)
                 exit(-1);
             }
             // open (initialize) file using storage.c function
-            if (storage = init_storage(filename)== NULL) // TODO: check that this check works uses storage.c to initialize file. storage.c returns NULL if it fails
-            {
-                perror("init_storage call in storage.c failed");
-                exit(-1);
-            } 
-            // send back same aknowledge again after opening file
+            storage = init_storage(filename); // TODO: check that this check works uses storage.c to initialize file. storage.c returns NULL if it fails
+            
+                // send back same aknowledge again after opening file
             if(write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
             {
                 perror("exited on write of fd_out");
@@ -90,7 +87,7 @@ int main(int argc, char** argv)
         }
         else // header.type == SHUTDOWN
         {
-            //
+
         }
 
         

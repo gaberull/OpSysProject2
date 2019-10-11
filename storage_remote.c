@@ -17,7 +17,7 @@ STORAGE * init_storage(char * name)
     STORAGE *s = malloc(sizeof(STORAGE));
     
     // open pipe_in for writing from client to server
-    if ((s->fd_to_storage = open("pipe_in", O_WRONLY) < 0)) // TODO: open pipe_in for writing?
+    if ((s->fd_to_storage = open("pipe_in", O_WRONLY) < 0)) // open pipe_in for writing?
         perror("failed to open pipe_in");
     // open pipe_out for reading from server to client
     if ((s->fd_from_storage = open("pipe_out", O_RDONLY) < 0))
