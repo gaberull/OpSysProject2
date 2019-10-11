@@ -194,13 +194,13 @@ int main(int argc, const char * argv[])
     if (argc==1)// no additional arguments specify storage file as "storage.bin"
     {
         //STORAGE* st = init_storage("storage.bin");
-        filename = "storage.bin";
+        strcpy(filename, "storage.bin"); // TODO: do I need to add null terminator to name?
     }
     // TODO: if there is a second argument, it is the name of the file to write to
     else if (argc==2)
     {
         //STORAGE* st = init_storage(argv[1]);
-        filename = argv[1];
+        strcpy(filename, argv[1]);
     }
     while(fgets(in_buffer, 100, stdin)!= NULL) // while input string is coming in
     {
