@@ -27,6 +27,7 @@ pipe_out:
 	mkfifo pipe_out
 
 clean:
-	rm -f *.o project2 server
-	rm -f pipe_in
-	rm -f pipe_out
+	rm -f *.o project2 server pipe_in pipe_out
+
+zip: 
+	zip project2.zip *.c Makefile README.txt
