@@ -130,12 +130,12 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     h.len_buffer = len;
 
     // send header to server
-    if (write(storage->fd_to_server, &h, sizeof(HEADER) != sizeof(HEADER) ))
+    if (write(storage->fd_to_storage, &h, sizeof(HEADER) != sizeof(HEADER) ))
     {
         perror("sending header to server failed: ");
     }
     // read response from server
-    if (read(storage->fd_from_server, &h, sizeof(HEADER) != sizeof(HEADER) ))
+    if (read(storage->fd_from_storage, &h, sizeof(HEADER) != sizeof(HEADER) ))
     {
         perror("reading header from server failed: ");
     }
@@ -147,7 +147,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     if (h.type == DATA)
     {
         // read len bytes from pipe to buf
-        int ret = (int)(read(storage->fd_from_server, buf, len))
+        int ret = (int)(read(storage->fd_from_storage, buf, len))
     }
 
     // unsuccessful
