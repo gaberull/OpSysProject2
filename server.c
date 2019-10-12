@@ -32,12 +32,13 @@ int main(int argc, char** argv)
             perror("error while opening pipe_out: ");
             exit(-1);
         }
-        // Do first read() from pipe
+        // read() from pipe
         if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
         {
             perror("error during read of fd_in: ");
             exit(-1);
         }
+        // conditionals for all possible header types
         if (header.type == INIT_CONNECTION) // check that header type is INIT 
         {
             // prepare to Send back aknowledge
@@ -55,42 +56,36 @@ int main(int argc, char** argv)
             // read in again to get name of file
             int size = header.len_message;      // size of message to follow
             char filename[size];    // create buffer to hold filename
-            if (read(fd_in, filename, size) != size)        // get filename from another read
+            if (read(fd_in, filename, size) != size)
             {
                 perror("error at read of fd_in: ");
                 exit(-1);
             }
             // open (initialize) file using storage.c function
-            storage = init_storage(filename); // TODO: check that this check works uses storage.c to initialize file. storage.c returns NULL if it fails
+            storage = init_storage(filename); 
             
-                // send back same aknowledge again after opening file
+                // send back aknowledge after opening file
             if(write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
             {
                 perror("error at write of fd_out: ");
                 exit(-1);
             }
+        }
+        else if (header.type == READ_REQUEST)
+        {
             
-        }
-        // do next read() to get next message
-        if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
-        {
-            perror("error during read of fd_in: ");
-            exit (-1);
-        }
-        if (header.type == READ_REQUEST)
-        {
-
         }
         else if (header.type == WRITE_REQUEST)
         {
-
+            
         }
-        else // header.type == SHUTDOWN
+        else    // header.type == SHUTDOWN
         {
             sleep(1);           // sleep for 1 second
             close(fd_in);       // close the named pipes
             close(fd_out);
             close_storage(storage);     // close the storage
+
         }
 
         // We broke out because of a disconnection: clean up
