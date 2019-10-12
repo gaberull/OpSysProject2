@@ -73,7 +73,21 @@ int main(int argc, char** argv)
         }
         else if (header.type == READ_REQUEST)
         {
-            
+            // client is requesting DATA.
+            // set return header message           
+            header_out.type = DATA;
+            header_out.len_message = 0;
+            header_out.location = header.location;
+            //header_out.len_buffer = header.len_buffer;              
+
+            // get_bytes() from storage.c
+            int ret = get_bytes(storage, buffer, header.location, header.len_buffer);
+            // TODO: if ret == 0, EOF, if -1, error I think. maybe send this back in header message
+            header_out.len_buffer = ret;
+
+            // send back the bytes read to the buffer
+            // ret will have the number of bytes retreived or 0 for EOF
+            write(fd_out, buffer, ret);     //TODO: maybe add error check
         }
         else if (header.type == WRITE_REQUEST)
         {

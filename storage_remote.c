@@ -139,7 +139,10 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     {
         perror("reading header from server failed: ");
     }
-    //if (h.type != DATA) printf("response message is wrong type");
+    if (h.len_buffer == 0) // EOF TODO: make sure EOF should be coming from storage.c and not from the client side
+    {
+        return 0;
+    }
     
     if (h.type == DATA)
     {
@@ -148,7 +151,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     }
 
     // unsuccessful
-    if (ret != len) return ret;
+    //if (ret != len) return ret;
     // Success
     return(len);
 };
