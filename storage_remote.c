@@ -147,7 +147,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     if (h.type == DATA)
     {
         // read len bytes from pipe to buf
-        int ret = (int)(read(storage->fd_from_storage, buf, len))
+        int ret = (int)(read(storage->fd_from_storage, buf, len));
     }
 
     // unsuccessful
