@@ -122,9 +122,33 @@ int close_storage(STORAGE *storage)
  */
 int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 {
+    // send READ request to server
+    HEADER h;
+    h.type = READ_REQUEST;
+    h.len_message = 0;
+    h.location = location;
+    h.len_buffer = len;
+
+    // send header to server
+    if (write(storage->fd_to_server, &h, sizeof(HEADER) != sizeof(HEADER) ))
+    {
+        perror("sending header to server failed: ");
+    }
+    // read response from server
+    if (read(storage->fd_from_server, &h, sizeof(HEADER) != sizeof(HEADER) ))
+    {
+        perror("reading header from server failed: ");
+    }
+    //if (h.type != DATA) printf("response message is wrong type");
     
-    
-    
+    if (h.type == DATA)
+    {
+        // read len bytes from pipe to buf
+        int ret = (int)(read(storage->fd_from_server, buf, len))
+    }
+
+    // unsuccessful
+    if (ret != len) return ret;
     // Success
     return(len);
 };
