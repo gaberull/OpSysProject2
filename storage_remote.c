@@ -37,13 +37,13 @@ STORAGE * init_storage(char * name)
     h.len_buffer = -1;  // not applicable to INIT_CONNECTION
     
     // write() to send the HEADER if return value > 0 it was succesful
-    if (write(s->fd_to_storage, &h, sizeof(h)) != sizeof(h))
+    if (write(s->fd_to_storage, &h, sizeof(HEADER)) != sizeof(HEADER))
     {
         perror("write (send to pipe_in) STORAGE failed: ");
         return NULL;
     }
     // send filename
-    if (write(s->fd_to_storage, &namestr, length) != length)
+    if (write(s->fd_to_storage, namestr, length) != length)
     {
         perror("write (send to pipe_in) filename failed: ");
         return NULL;
@@ -55,18 +55,20 @@ STORAGE * init_storage(char * name)
         perror("read() from pipe_out has failed: ");
         return NULL;
     }
+                                        /*
     if (read(s->fd_from_storage, &h, sizeof(HEADER) != sizeof(HEADER)))
     {
         perror("read() from pipe_out has failed: ");
         return NULL;
     }
+                                        */
     // All okay
     if (h.type == ACKNOWLEDGE)       // if correct response return s
     {
         return s;
     }
     else return NULL;
-
+    
 };
 
 /**
@@ -128,7 +130,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     h.len_message = 0;
     h.location = location;
     h.len_buffer = len;
-
+    
     // send header to server
     if (write(storage->fd_to_storage, &h, sizeof(HEADER) != sizeof(HEADER) ))
     {
@@ -149,7 +151,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
         // read len bytes from pipe to buf
         read(storage->fd_from_storage, buf, len);
     }
-
+    
     // unsuccessful
     //if (ret != len) return ret;
     // Success
@@ -170,7 +172,7 @@ int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     h.len_message = len;    //TODO: should this be len too??
     h.location = location;
     h.len_buffer = len;
-
+    
     // write header to server TODO: add check
     write(storage->fd_to_storage, &h, sizeof(HEADER));
     
@@ -180,7 +182,7 @@ int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     // receive AKNOWLEDGE
     read(storage->fd_from_storage, &h, sizeof(HEADER));
     
+    if (h.len_buffer != len) return h.len_buffer;
     // Success
     return(len);
 };
-
