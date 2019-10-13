@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         else if (header.type == WRITE_REQUEST)
         {
             // set up header to be returned
-            header_out.type = AKNOWLEDGE;
+            header_out.type = ACKNOWLEDGE;
             header_out.len_message = 0;
             header_out.location = -1;
             //header_out.len_buffer = -1;

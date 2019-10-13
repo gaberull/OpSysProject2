@@ -165,7 +165,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 {
     
-    Header h;
+    HEADER h;
     h.type = WRITE_REQUEST;
     h.len_message = len;    //TODO: should this be len too??
     h.location = location;
@@ -175,7 +175,7 @@ int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     write(storage->fd_to_storage, &h, sizeof(HEADER));
     
     // write to send buffer to server
-    write(storage->fd_to_storage, buff, len);
+    write(storage->fd_to_storage, buf, len);
     
     // receive AKNOWLEDGE
     read(storage->fd_from_storage, &h, sizeof(HEADER));
