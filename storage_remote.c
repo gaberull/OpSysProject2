@@ -147,7 +147,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     if (h.type == DATA)
     {
         // read len bytes from pipe to buf
-        int ret = (int)(read(storage->fd_from_storage, buf, len));
+        read(storage->fd_from_storage, buf, len);
     }
 
     // unsuccessful
@@ -165,7 +165,20 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 {
     
+    Header h;
+    h.type = WRITE_REQUEST;
+    h.len_message = len;    //TODO: should this be len too??
+    h.location = location;
+    h.len_buffer = len;
+
+    // write header to server TODO: add check
+    write(storage->fd_to_storage, &h, sizeof(HEADER));
     
+    // write to send buffer to server
+    write(storage->fd_to_storage, buff, len);
+    
+    // receive AKNOWLEDGE
+    read(storage->fd_from_storage, &h, sizeof(HEADER));
     
     // Success
     return(len);

@@ -81,7 +81,7 @@ int main(int argc, char** argv)
             //header_out.len_buffer = header.len_buffer;              
 
             // get_bytes() from storage.c
-            int ret = get_bytes(storage, buffer, header.location, header.len_buffer);
+            ret = get_bytes(storage, buffer, header.location, header.len_buffer);
             // TODO: if ret == 0, EOF, if -1, error I think. maybe send this back in header message
             header_out.len_buffer = ret;
 
@@ -91,7 +91,21 @@ int main(int argc, char** argv)
         }
         else if (header.type == WRITE_REQUEST)
         {
+            // set up header to be returned
+            header_out.type = AKNOWLEDGE;
+            header_out.len_message = 0;
+            header_out.location = -1;
+            //header_out.len_buffer = -1;
             
+            // get the buffer from the remote to be written
+            read(fd_in, buffer, header.len_buffer);
+
+            ret = put_bytes(storage, buffer, header.location, header.len_buffer);
+            // set len_buffer to ret - will be num bytes written or 0 for EOF
+            header_out.len_buffer = ret;
+
+            // write to send back to remote
+            write(fd_out, &header_out, sizeof(HEADER));
         }
         else    // header.type == SHUTDOWN
         {
