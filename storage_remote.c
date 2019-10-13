@@ -24,11 +24,13 @@ STORAGE * init_storage(char * name)
         perror("failed to open pipe_out");
     
     // Append '\0' to name
+    printf("%s", name);
     int length = (int)strlen(name) + 1;
     char namestr[length];
+    printf("%d", length);
     namestr[length -1] = '\0';           // append null character to string
     strncpy(namestr, name, length-1);   // copy all but the null character b/c its already there
-    
+    printf("%s", namestr);
     // create and initialize HEADER instance to send INIT_CONNECTION message to server
     HEADER h;
     h.type = INIT_CONNECTION;
