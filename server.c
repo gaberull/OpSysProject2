@@ -88,6 +88,7 @@ int main(int argc, char** argv)
             header_out.len_message = ret;
             // send back the bytes read to the buffer
             // ret will have the number of bytes retreived or 0 for EOF
+            write(fd_out, &header_out, sizeof(HEADER));
             write(fd_out, buffer, ret);     //TODO: maybe add error check
         }
         else if (header.type == WRITE_REQUEST)
