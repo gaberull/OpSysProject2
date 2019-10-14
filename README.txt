@@ -43,3 +43,5 @@ http://www.cplusplus.com/reference/cstdio/perror/?kw=perror
 http://www.cplusplus.com/reference/cstring/strcpy/
 
 https://en.wikipedia.org/wiki/Null-terminated_string
+
+https://www.linuxtoday.com/blog/blocking-and-non-blocking-i-0.html
