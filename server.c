@@ -72,7 +72,7 @@ int main(int argc, char** argv)
             // conditionals for all possible header types
             if (header.type == INIT_CONNECTION) // check that header type is INIT
             {
-                printf("received INIT_CONN\n");
+                //printf("received INIT_CONN\n");
                 // prepare to Send back aknowledge
                 header_out.type = ACKNOWLEDGE;
                 header_out.len_message = 0;
@@ -107,7 +107,7 @@ int main(int argc, char** argv)
             }
             else if (header.type == READ_REQUEST)
             {
-                printf("received READ_REQ\n");
+                //printf("received READ_REQ\n");
                 // client is requesting DATA.
                 // set return header message
                 header_out.type = DATA;
@@ -127,7 +127,7 @@ int main(int argc, char** argv)
             }
             else if (header.type == WRITE_REQUEST)
             {
-                printf("RECEIVED WRITE REQ\n");
+                //printf("RECEIVED WRITE REQ\n");
                 // set up header to be returned
                 header_out.type = ACKNOWLEDGE;
                 header_out.len_message = 0;
@@ -159,7 +159,7 @@ int main(int argc, char** argv)
             }
             else    // header.type == SHUTDOWN
             {
-                printf("received SHUTDOWN\n");
+                //printf("received SHUTDOWN\n");
                 // send acknowledge message
                 header_out.type = ACKNOWLEDGE;
                 header_out.len_message = 0;
