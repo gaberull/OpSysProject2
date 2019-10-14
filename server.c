@@ -17,27 +17,35 @@ int main(int argc, char** argv)
     int fd_out;
     int fd_in;
     
+    // TESTING SERVER
+    //storage = init_storage("storage.bin");
+    
+    
     // Loop forever (break out with SHUTDOWN)
     while(1) {
         fprintf(stderr, "Waiting for connection with client...\n");
         
+        
         // Open pipes
-        if ((fd_in = open("pipe_in", O_RDONLY) < 0))
+        if ((fd_in = open(PIPE_NAME_TO_STORAGE, O_RDONLY)) < 0)
         {
             perror("the following error occured while opening pipe_in: ");
             exit(-1);       // instructions say okay to terminate on failure
         }
-        if ((fd_out = open("pipe_out", O_WRONLY) < 0))
+        if ((fd_out = open(PIPE_NAME_FROM_STORAGE, O_WRONLY)) < 0)
         {
             perror("error while opening pipe_out: ");
             exit(-1);
         }
+    restart:
         // read() from pipe
-        if (read(fd_in, &header, sizeof(HEADER) != sizeof(HEADER) ))
+        if (read(fd_in, &header, sizeof(HEADER)) != sizeof(HEADER) )
         {
-            perror("error during read of fd_in: ");
+           perror("error during read of fd_in: ");
             exit(-1);
         }
+
+
         // conditionals for all possible header types
         if (header.type == INIT_CONNECTION) // check that header type is INIT
         {
@@ -84,8 +92,8 @@ int main(int argc, char** argv)
             // get_bytes() from storage.c
             ret = get_bytes(storage, buffer, header.location, header.len_buffer);
             // TODO: if ret == 0, EOF, if -1, error I think. maybe send this back in header message
-            header_out.len_buffer = ret;
-            header_out.len_message = ret;
+            header_out.len_buffer = header.len_buffer; //ret;
+            header_out.len_message = header.len_buffer; //ret;
             // send back the bytes read to the buffer
             // ret will have the number of bytes retreived or 0 for EOF
             write(fd_out, &header_out, sizeof(HEADER));
@@ -102,9 +110,9 @@ int main(int argc, char** argv)
             // get the buffer from the remote to be written
             read(fd_in, buffer, header.len_buffer);
             
-            ret = put_bytes(storage, buffer, header.location, header.len_buffer);
+            //ret = put_bytes(storage, buffer, header.location, header.len_buffer);
             // set len_buffer to ret - will be num bytes written or 0 for EOF
-            header_out.len_buffer = ret;
+            header_out.len_buffer = header.len_buffer; //ret;
             
             // write to send back to remote
             write(fd_out, &header_out, sizeof(HEADER));
@@ -122,6 +130,8 @@ int main(int argc, char** argv)
             close(fd_in);       // close the named pipes
             close(fd_out);
             close_storage(storage);     // close the storage
+            //restart loop
+            goto restart;
         }
         
         // We broke out because of a disconnection: clean up
