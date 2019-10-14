@@ -13,7 +13,7 @@
  */
 STORAGE * init_storage(char * name)
 {
-    printf("entering init_storage in storage_remote.c: ");
+    //printf("entering init_storage in storage_remote.c: ");
     // Create space for the STORAGE object
     STORAGE *s = malloc(sizeof(STORAGE));
     
@@ -36,7 +36,7 @@ STORAGE * init_storage(char * name)
     // create and initialize HEADER instance to send INIT_CONNECTION message to server
     HEADER h;
     h.type = INIT_CONNECTION;
-    h.len_message = length;
+    h.len_message = length+1;
     h.location = -1;    // not applicable to INIT_CONNECTION
     h.len_buffer = -1;  // not applicable to INIT_CONNECTION
     
@@ -47,7 +47,7 @@ STORAGE * init_storage(char * name)
         return NULL;
     }
     // send filename
-    if (write(s->fd_to_storage, name, length) != length)
+    if (write(s->fd_to_storage, name, length+1) != length+1)
     {
         perror("write (send to pipe_in) filename failed: ");
         return NULL;
@@ -180,13 +180,22 @@ int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     h.len_buffer = len;
     
     // write header to server TODO: add check
-    write(storage->fd_to_storage, &h, sizeof(HEADER));
+    if (write(storage->fd_to_storage, &h, sizeof(HEADER)) != sizeof(HEADER))
+    {
+        perror("put_bytes failed to write header: ");
+    }
     
     // write to send buffer to server
-    write(storage->fd_to_storage, buf, len);
+    if (write(storage->fd_to_storage, buf, len) != len)
+    {
+        perror("failed to write buffer: ");
+    }
     
     // receive AKNOWLEDGE
-    read(storage->fd_from_storage, &h, sizeof(HEADER));
+    if (read(storage->fd_from_storage, &h, sizeof(HEADER)) != sizeof(HEADER))
+    {
+        perror("failed to receive header: ");
+    }
     
     // Success
     return(len);
