@@ -13,24 +13,26 @@
  */
 STORAGE * init_storage(char * name)
 {
+    printf("entering init_storage in storage_remote.c: ");
     // Create space for the STORAGE object
     STORAGE *s = malloc(sizeof(STORAGE));
     
     // open pipe_in for writing from client to server
-    if ((s->fd_to_storage = open("pipe_in", O_WRONLY) < 0)) // open pipe_in for writing?
+    if ((s->fd_to_storage = open(PIPE_NAME_TO_STORAGE, O_WRONLY)) < 0) // open pipe_in for writing?
         perror("failed to open pipe_in");
     // open pipe_out for reading from server to client
-    if ((s->fd_from_storage = open("pipe_out", O_RDONLY) < 0))
+    if ((s->fd_from_storage = open(PIPE_NAME_FROM_STORAGE, O_RDONLY)) < 0)
         perror("failed to open pipe_out");
     
     // Append '\0' to name
-    printf("%s", name);
-    int length = (int)strlen(name) + 1;
-    char namestr[length];
-    printf("%d", length);
-    namestr[length -1] = '\0';           // append null character to string
-    strncpy(namestr, name, length-1);   // copy all but the null character b/c its already there
-    printf("%s", namestr);
+    //printf("%s", name);
+    int length = (int)strlen(name);
+    //char namestr[length];
+    //printf("%d", length);
+    //namestr[length -1] = '\0';           // append null character to string
+    //strncpy(namestr, name, length-1);   // copy all but the null character b/c its already there
+    //printf("%s", namestr);
+    
     // create and initialize HEADER instance to send INIT_CONNECTION message to server
     HEADER h;
     h.type = INIT_CONNECTION;
@@ -45,14 +47,14 @@ STORAGE * init_storage(char * name)
         return NULL;
     }
     // send filename
-    if (write(s->fd_to_storage, namestr, length) != length)
+    if (write(s->fd_to_storage, name, length) != length)
     {
         perror("write (send to pipe_in) filename failed: ");
         return NULL;
     }
     
     // Do two reads() to get responses for both writes
-    if (read(s->fd_from_storage, &h, sizeof(HEADER) != sizeof(HEADER)))
+    if (read(s->fd_from_storage, &h, sizeof(HEADER)) != sizeof(HEADER))
     {
         perror("read() from pipe_out has failed: ");
         return NULL;
@@ -89,13 +91,13 @@ int close_storage(STORAGE *storage)
     header.len_buffer = -1;
     
     // send header to server
-    if (write(storage->fd_to_storage, &header, sizeof(HEADER) != sizeof(HEADER) ))
+    if (write(storage->fd_to_storage, &header, sizeof(HEADER)) != sizeof(HEADER) )
     {
         perror("while sending shudown header: ");
         return -1;
     }
     // receive response from server
-    if (read(storage->fd_from_storage, &header, sizeof(HEADER) != sizeof(HEADER) ))
+    if (read(storage->fd_from_storage, &header, sizeof(HEADER)) != sizeof(HEADER) )
     {
         perror("while receiving acknowledgement about shutdown: ");
         return -1;
@@ -126,6 +128,7 @@ int close_storage(STORAGE *storage)
  */
 int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 {
+    
     // send READ request to server
     HEADER h;
     h.type = READ_REQUEST;
@@ -134,12 +137,12 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     h.len_buffer = len;
     
     // send header to server
-    if (write(storage->fd_to_storage, &h, sizeof(HEADER) != sizeof(HEADER) ))
+    if (write(storage->fd_to_storage, &h, sizeof(HEADER)) != sizeof(HEADER))
     {
         perror("sending header to server failed: ");
     }
     // read response from server
-    if (read(storage->fd_from_storage, &h, sizeof(HEADER) != sizeof(HEADER) ))
+    if (read(storage->fd_from_storage, &h, sizeof(HEADER)) != sizeof(HEADER) )
     {
         perror("reading header from server failed: ");
     }
@@ -168,6 +171,7 @@ int get_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
  */
 int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
 {
+                                                        
     
     HEADER h;
     h.type = WRITE_REQUEST;
@@ -184,7 +188,6 @@ int put_bytes(STORAGE *storage, unsigned char *buf, int location, int len)
     // receive AKNOWLEDGE
     read(storage->fd_from_storage, &h, sizeof(HEADER));
     
-    if (h.len_buffer != len) return h.len_buffer;
     // Success
     return(len);
 };
