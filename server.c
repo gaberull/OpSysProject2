@@ -67,8 +67,8 @@ int main(int argc, char** argv)
         while (getAll(fd_in, &header, sizeof(HEADER)))
         {
             // read() from pipe
-
-
+            
+            
             // conditionals for all possible header types
             if (header.type == INIT_CONNECTION) // check that header type is INIT
             {
@@ -78,18 +78,18 @@ int main(int argc, char** argv)
                 header_out.len_message = 0;
                 header_out.location = -1;
                 header_out.len_buffer = -1;
-                                                /*      //removing one write
-                // write to fd_out to send header_out back across pipe
-                if (write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
-                {
-                    perror("error during write to fd_out: ");
-                    exit (-1);
-                }                               */
+                /*      //removing one write
+                 // write to fd_out to send header_out back across pipe
+                 if (write(fd_out, &header_out, sizeof(HEADER)) != sizeof(HEADER))
+                 {
+                 perror("error during write to fd_out: ");
+                 exit (-1);
+                 }                               */
                 
                 // read in again to get name of file
                 int size = header.len_message;      // size of message to follow
                 char filename[size];    // create buffer to hold filename
-                int test = (int)read(fd_in, filename, size);
+                int test = (int)getAll(fd_in, filename, size);
                 if (test != size)
                 {
                     perror("error at read of fd_in: ");
@@ -135,7 +135,7 @@ int main(int argc, char** argv)
                 //header_out.len_buffer = -1;
                 
                 // get the buffer from the remote to be written
-                int asize = (int)read(fd_in, buffer, header.len_buffer);
+                int asize = (int)getAll(fd_in, buffer, header.len_buffer);
                 if (asize != header.len_buffer)
                 {
                     perror("error while reading in buffer: ");
@@ -168,11 +168,11 @@ int main(int argc, char** argv)
                 write(fd_out, &header_out, sizeof(HEADER));
                 
                 sleep(1);           // sleep for 1 second
-                        /*
-                close(fd_in);       // close the named pipes
-                close(fd_out);
-                close_storage(storage);     // close the storage
-                         */
+                /*
+                 close(fd_in);       // close the named pipes
+                 close(fd_out);
+                 close_storage(storage);     // close the storage
+                 */
                 break;
             }
         }
