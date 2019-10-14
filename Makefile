@@ -30,4 +30,4 @@ clean:
 	rm -f *.o project2 server pipe_in pipe_out
 
 zip: 
-	zip project2.zip *.c Makefile README.txt
+	zip project2.zip *.c *.h Makefile README.txt
